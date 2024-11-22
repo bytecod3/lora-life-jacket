@@ -24,6 +24,16 @@
 
 // other pin defs
 #define PANIC_LED 5
+#define BUTTON_PIN 12
+
+// water level pin
+#define WATER_LEVEL_POWER_PIN 14
+#define WATER_LEVEL_ADC_PIN 32
+
+// GPS serial
+#define GPS_RX 16
+#define GPS_TX 17
+#define GPS_BAUD 9600
 
 
 #endif

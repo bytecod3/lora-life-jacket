@@ -1,7 +1,14 @@
 #include <Arduino.h>
 #include <LoRa.h>
+#include <TinyGPSPlus.h>
 #include <SPI.h>
 #include "defs.h"
+
+/**
+ * Object instances
+ */
+// create an instance of the hardwareSerial class for serial2
+HardwareSerial gpsSerial(2);
 
 /**
  * Function prototypes
@@ -38,11 +45,27 @@ void initLORA() {
 }
 
 /**
+ * @brief Initialize water level sensor
+ * We will power the water level sensor only when taking readings 
+ */
+void initWaterLevelSensor() {
+    
+}
+
+/**
  * @brief Initialize LEDs
  * 
  */ 
 void initLEDs() {
     pinMode(PANIC_LED, OUTPUT);
+    debugln("LEDs init OK!");
+}
+
+/**
+ * @brief Init panic button
+ */
+void initPanicButton() {
+    pinMode(BUTTON_PIN, INPUT);
 }
 
 /**
@@ -50,7 +73,8 @@ void initLEDs() {
  * 
  */
 void initGPS() {
-    
+    gpsSerial.begin(GPS_BAUD, SERIAL_8N1, GPS_RX, GPS_TX);\
+    debugln("GPS serial2 started at 9600 BAUD.");
 }
 
 
@@ -80,13 +104,34 @@ void readPanicButton() {
 
 }
 
+/**
+ * @brief Read GPS 
+ */
+void readGPS() {
+    while(gpsSerial.available() > 0) {
+        // get byte data from the GPS
+        char gpsData = gpsSerial.read();
+        debug(gpsData);
+    }
+
+    delay(500);
+}
+
 void initHW() {
     Serial.begin(BAUDRATE);
+
+    // for the water level sensor
+    pinMode(WATER_LEVEL_POWER_PIN, OUTPUT);
+    debugln("Water level sensor init OK!");
+
     initLORA();
     initGPS();
     initWaterLevelSensor();
     initLEDs();
+    initPanicButton();
     initRFID();
+
+    
 
 }
 

@@ -1,7 +1,8 @@
 #include <Arduino.h>
+#include <SPI.h>
 #include <LoRa.h>
 #include <TinyGPSPlus.h>
-#include <SPI.h>
+#include <MFRC522.h>
 #include "defs.h"
 
 /**
@@ -10,6 +11,7 @@
 // create an instance of the hardwareSerial class for serial2
 HardwareSerial gpsSerial(2);
 TinyGPSPlus gps;
+MFRC522 mfrc522(RFID_CS, RFID_RST);
 
 int water_raw_val = 0; // value for storing water level
 int currentBtnState, previousBtnState;
@@ -32,6 +34,19 @@ void activateLEDs();
 void sendLORAMsg(char* );
 void readRFID();
 void initHW();
+
+/**
+ * @brief Initialize RFID tags 
+ * 
+ */
+void initRFID() {
+    SPI.begin();
+    mfrc522.PCD_Init();
+    delay(10);
+    mfrc522.PCD_DumpVersionToSerial(); // show card reader details 
+    debugln(F("Scan PICC to see UID, SAK, type, and data blocks..."));
+
+}
 
 /**
  * Functions implementation
@@ -120,6 +135,26 @@ uint8_t readPanicButton() {
 }
 
 /**
+ * @brief Read the RFID reader for card presence
+ * 
+ */
+void readRFID() {
+    // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
+	if ( !mfrc522.PICC_IsNewCardPresent()) {
+		return;
+	}
+
+	// Select one of the cards
+	if ( !mfrc522.PICC_ReadCardSerial()) {
+		return;
+	}
+
+	// Dump debug info about the card; PICC_HaltA() is automatically called
+	mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
+    
+}
+
+/**
  * @brief Read GPS 
  */
 void readGPS() {
@@ -149,22 +184,28 @@ void readGPS() {
     // time 
     debug(F(" "));
     if (gps.time.isValid()) {
-        if (gps.time.hour() < 10) Serial.print(F("0"));
-        Serial.print(gps.time.hour());
-        Serial.print(F(":"));
-        if (gps.time.minute() < 10) Serial.print(F("0"));
-        Serial.print(gps.time.minute());
-        Serial.print(F(":"));
-        if (gps.time.second() < 10) Serial.print(F("0"));
-        Serial.print(gps.time.second());
-        Serial.print(F("."));
-        if (gps.time.centisecond() < 10) Serial.print(F("0"));
-        Serial.print(gps.time.centisecond());
-    } else {
-        Serial.print(F("INVALID"));
+
+        if (gps.time.hour() < 10) debug(F("0"));
+        debug(gps.time.hour());
+        debug(F(":"));
+
+        if (gps.time.minute() < 10) debug(F("0"));
+        debug(gps.time.minute());
+        debug(F(":"));
+
+        if (gps.time.second() < 10) debug(F("0"));
+        debug(gps.time.second());
+        debug(F("."));
+
+        if (gps.time.centisecond() < 10) debug(F("0"));
+        debug(gps.time.centisecond());
+
+    } else
+    {
+        debug(F("INVALID"));
     }
 
-    Serial.println();
+    debugln();
 
 }
 
@@ -180,11 +221,13 @@ int readWaterLevel() {
     return water_raw_val;
 }
 
+
 /**
  * @brief Initialize the hardware
  * 
  */
 void initHW() {
+
     Serial.begin(BAUDRATE);
     initLORA();
     initGPS();
@@ -192,15 +235,20 @@ void initHW() {
     initLEDs();
     initPanicButton();
     initRFID();
+
 }
 
 void setup() {
     debugln("Initializing hardware");
-    void initHW();
+    initHW();
     debugln();
 
 }
 
 void loop() {
+
+    // read and check water level
+    // check for water level
+    // read and check panic button
     
 }

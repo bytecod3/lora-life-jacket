@@ -10,6 +10,7 @@
             "includePath": [
                 "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/include",
                 "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/src",
+                "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/.pio/libdeps/esp32doit-devkit-v1/MFRC522/src",
                 "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/.pio/libdeps/esp32doit-devkit-v1/TinyGPSPlus/src",
                 "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/.pio/libdeps/esp32doit-devkit-v1/LoRa/src",
                 "C:/Users/PC/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
@@ -249,6 +250,7 @@
                 "path": [
                     "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/include",
                     "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/src",
+                    "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/.pio/libdeps/esp32doit-devkit-v1/MFRC522/src",
                     "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/.pio/libdeps/esp32doit-devkit-v1/TinyGPSPlus/src",
                     "f:/5th-year/project/kambi/lora-life-jacket/firmware/main/.pio/libdeps/esp32doit-devkit-v1/LoRa/src",
                     "C:/Users/PC/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",

@@ -23,6 +23,10 @@
 
 #define BAUDRATE 115200
 
+// RFID reader Pins
+#define RFID_RST    25
+#define RFID_CS     26
+
 // other pin defs
 #define PANIC_LED 5
 #define BUTTON_PIN 12

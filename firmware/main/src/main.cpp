@@ -9,8 +9,9 @@
  */
 // create an instance of the hardwareSerial class for serial2
 HardwareSerial gpsSerial(2);
+TinyGPSPlus gps;
 
-int water_raw_val = 0; // value for storin water level
+int water_raw_val = 0; // value for storing water level
 int currentBtnState, previousBtnState;
 unsigned int lastDebounceTime = 0;
 unsigned int debounceDelay = 100;
@@ -99,10 +100,6 @@ void sendLORAMsg(char* msg) {
 }
 
 /**
- * 
- */
-
-/**
  * @brief Read the panic button attached to the life jacket
  * This is debounced via software
  * If it is pressed, send a message via LORA to base station
@@ -119,24 +116,60 @@ uint8_t readPanicButton() {
     if( (millis() - lastDebounceTime) > debounceDelay) {
         return digitalRead(currentBtnState);
     }
-    
+
 }
 
 /**
  * @brief Read GPS 
  */
 void readGPS() {
-    while(gpsSerial.available() > 0) {
-        // get byte data from the GPS
-        char gpsData = gpsSerial.read();
-        debug(gpsData);
+
+    // Get location
+    debugln("Location: ");
+    if(gps.location.isValid()) {
+        Serial.print(gps.location.lat(), 6);
+        debug(F(","));
+        Serial.print(gps.location.lng(), 6);
+    } else {
+        debug(F("INVALID"));
     }
 
-    delay(500);
+    // Get time and date
+    debug(F("Date/time: "));
+    if(gps.date.isValid()) {
+        debug(gps.date.month());
+        debug(F("/"));
+        debug(gps.date.day());
+        debug(F("/"));
+        debug(gps.date.year());
+    } else {
+        debug(F("INVALID"));
+    }
+
+    // time 
+    debug(F(" "));
+    if (gps.time.isValid()) {
+        if (gps.time.hour() < 10) Serial.print(F("0"));
+        Serial.print(gps.time.hour());
+        Serial.print(F(":"));
+        if (gps.time.minute() < 10) Serial.print(F("0"));
+        Serial.print(gps.time.minute());
+        Serial.print(F(":"));
+        if (gps.time.second() < 10) Serial.print(F("0"));
+        Serial.print(gps.time.second());
+        Serial.print(F("."));
+        if (gps.time.centisecond() < 10) Serial.print(F("0"));
+        Serial.print(gps.time.centisecond());
+    } else {
+        Serial.print(F("INVALID"));
+    }
+
+    Serial.println();
+
 }
 
 /**
- * @brief read water level
+ * @brief Read water level
  * 
  */
 int readWaterLevel() {
@@ -153,7 +186,6 @@ int readWaterLevel() {
  */
 void initHW() {
     Serial.begin(BAUDRATE);
-
     initLORA();
     initGPS();
     initWaterLevelSensor();
@@ -163,7 +195,9 @@ void initHW() {
 }
 
 void setup() {
+    debugln("Initializing hardware");
     void initHW();
+    debugln();
 
 }
 

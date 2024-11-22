@@ -7,8 +7,8 @@ RFID scan code
 GPS
 LED lights
 
-Base station
+BASE STATION
 UI
 RFID reader
-Lora tRANSCEIVER
+Lora Transceiver
 Database

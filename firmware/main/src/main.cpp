@@ -10,6 +10,11 @@
 // create an instance of the hardwareSerial class for serial2
 HardwareSerial gpsSerial(2);
 
+int water_raw_val = 0; // value for storin water level
+int currentBtnState, previousBtnState;
+unsigned int lastDebounceTime = 0;
+unsigned int debounceDelay = 100;
+
 /**
  * Function prototypes
  * 
@@ -20,8 +25,8 @@ void initWaterLevelSensor();
 void initLEDs();
 void initRFID();
 void readGPS();
-void readWaterLevel();
-void readPanicButton();
+int readWaterLevel();
+uint8_t readPanicButton();
 void activateLEDs();
 void sendLORAMsg(char* );
 void readRFID();
@@ -49,7 +54,9 @@ void initLORA() {
  * We will power the water level sensor only when taking readings 
  */
 void initWaterLevelSensor() {
-    
+    pinMode(WATER_LEVEL_POWER_PIN, OUTPUT);
+    digitalWrite(WATER_LEVEL_POWER_PIN, LOW);
+    debugln("Water level sensor init OK!");
 }
 
 /**
@@ -66,6 +73,7 @@ void initLEDs() {
  */
 void initPanicButton() {
     pinMode(BUTTON_PIN, INPUT);
+    debugln("Panic button init OK!");
 }
 
 /**
@@ -96,12 +104,22 @@ void sendLORAMsg(char* msg) {
 
 /**
  * @brief Read the panic button attached to the life jacket
+ * This is debounced via software
  * If it is pressed, send a message via LORA to base station
  * Light up some LED
  * 
  */
-void readPanicButton() {
+uint8_t readPanicButton() {
+    currentBtnState = digitalRead(BUTTON_PIN);
+    if(currentBtnState != previousBtnState) {
+        // get the time if the change, every time a button state changes
+        lastDebounceTime = millis(); 
+    }
 
+    if( (millis() - lastDebounceTime) > debounceDelay) {
+        return digitalRead(currentBtnState);
+    }
+    
 }
 
 /**
@@ -117,12 +135,24 @@ void readGPS() {
     delay(500);
 }
 
+/**
+ * @brief read water level
+ * 
+ */
+int readWaterLevel() {
+    digitalWrite(WATER_LEVEL_POWER_PIN, HIGH); // turn the sensor ON
+    delay(20);
+    water_raw_val = analogRead(WATER_LEVEL_ADC_PIN);
+    digitalWrite(WATER_LEVEL_ADC_PIN, LOW);
+    return water_raw_val;
+}
+
+/**
+ * @brief Initialize the hardware
+ * 
+ */
 void initHW() {
     Serial.begin(BAUDRATE);
-
-    // for the water level sensor
-    pinMode(WATER_LEVEL_POWER_PIN, OUTPUT);
-    debugln("Water level sensor init OK!");
 
     initLORA();
     initGPS();
@@ -130,9 +160,6 @@ void initHW() {
     initLEDs();
     initPanicButton();
     initRFID();
-
-    
-
 }
 
 void setup() {

@@ -151,7 +151,7 @@ void readRFID() {
 
 	// Dump debug info about the card; PICC_HaltA() is automatically called
 	mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
-    
+
 }
 
 /**
@@ -250,5 +250,8 @@ void loop() {
     // read and check water level
     // check for water level
     // read and check panic button
+
+    // compose LORA message for transmission
+    sprintf();
     
 }

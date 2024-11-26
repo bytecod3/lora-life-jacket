@@ -333,290 +333,6 @@
 				)
 			)
 		)
-		(symbol "Connector_Generic:Conn_01x07"
-			(pin_names
-				(offset 1.016) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "J"
-				(at 0 10.16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Conn_01x07"
-				(at 0 -10.16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Generic connector, single row, 01x07, script generated (kicad-library-utils/schlib/autogen/connector/)"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "connector"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "Connector*:*_1x??_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Conn_01x07_1_1"
-				(rectangle
-					(start -1.27 -7.493)
-					(end 0 -7.747)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 -4.953)
-					(end 0 -5.207)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 -2.413)
-					(end 0 -2.667)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 0.127)
-					(end 0 -0.127)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 2.667)
-					(end 0 2.413)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 5.207)
-					(end 0 4.953)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 7.747)
-					(end 0 7.493)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 8.89)
-					(end 1.27 -8.89)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin passive line
-					(at -5.08 7.62 0)
-					(length 3.81)
-					(name "Pin_1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 5.08 0)
-					(length 3.81)
-					(name "Pin_2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 2.54 0)
-					(length 3.81)
-					(name "Pin_3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 3.81)
-					(name "Pin_4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -2.54 0)
-					(length 3.81)
-					(name "Pin_5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -5.08 0)
-					(length 3.81)
-					(name "Pin_6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -7.62 0)
-					(length 3.81)
-					(name "Pin_7"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "7"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "Device:Buzzer"
 			(pin_names
 				(offset 0.0254) hide)
@@ -3493,10 +3209,6 @@
 		(uuid "aedd4f4e-2253-4d4e-84a6-c9943dbb6689")
 	)
 	(no_connect
-		(at 139.7 95.25)
-		(uuid "bf9bcca6-86ca-4973-9ef1-36926def3d19")
-	)
-	(no_connect
 		(at 104.14 87.63)
 		(uuid "d48d0417-74ab-4241-9105-6b8e8b9e91a0")
 	)
@@ -3657,16 +3369,6 @@
 			(type default)
 		)
 		(uuid "731bd8a2-4284-4d0d-ac39-aab1171a6c96")
-	)
-	(polyline
-		(pts
-			(xy 190.5 127) (xy 255.27 127)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "773a43e4-7b0d-4b0e-8e9f-727e6e56830b")
 	)
 	(wire
 		(pts
@@ -3886,7 +3588,7 @@
 	)
 	(rectangle
 		(start 190.5 29.21)
-		(end 255.27 161.29)
+		(end 255.27 127)
 		(stroke
 			(width 0)
 			(type default)
@@ -3939,17 +3641,6 @@
 			)
 		)
 		(uuid "43e90109-666c-4a0d-be26-a46e05882f11")
-	)
-	(text "RC522 MODULE \n"
-		(exclude_from_sim no)
-		(at 223.012 129.794 0)
-		(effects
-			(font
-				(face "Arial")
-				(size 1.778 1.778)
-			)
-		)
-		(uuid "72738485-1771-4550-97f5-8683d30387da")
 	)
 	(text "LORA Life Jacket"
 		(exclude_from_sim no)
@@ -4094,7 +3785,7 @@
 			)
 		)
 	)
-	(global_label "WATER_LVL_SIGN"
+	(global_label "WATER_LVL_ADC"
 		(shape input)
 		(at 139.7 97.79 0)
 		(fields_autoplaced yes)
@@ -4106,34 +3797,12 @@
 		)
 		(uuid "1ffc0337-ae17-43f5-a9b4-c3c74db70888")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 156.4535 97.79 0)
+			(at 155.9659 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "MISO"
-		(shape input)
-		(at 223.52 144.78 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "21802a81-9be5-4c41-a1f8-455bf6e01e4a")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 223.52 151.6608 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 				(hide yes)
 			)
 		)
@@ -4151,28 +3820,6 @@
 		(uuid "24d32d21-7d8b-452b-abf9-db45008f72bb")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 207.5723 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SDA{slash}SS"
-		(shape input)
-		(at 231.14 144.78 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "36081eed-ff52-40b0-8a2b-2e604af19a55")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 231.14 153.512 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4336,29 +3983,7 @@
 			)
 		)
 	)
-	(global_label "3V3"
-		(shape input)
-		(at 215.9 144.78 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "4ce48ab8-978a-474d-a02b-56f23c02ed04")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 215.9 150.5677 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "3V3"
+	(global_label "WATER_LVL_PWR"
 		(shape input)
 		(at 69.85 91.44 0)
 		(fields_autoplaced yes)
@@ -4368,58 +3993,14 @@
 			)
 			(justify left)
 		)
-		(uuid "55fa43b7-c4ab-434d-9ccb-ed1724355a8a")
+		(uuid "5c718856-408c-4639-8804-f92d4b62a1f2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 75.6377 91.44 0)
+			(at 86.4955 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "RF_RST"
-		(shape input)
-		(at 218.44 144.78 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "57a74a04-0f36-414e-a11e-9666250589bd")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 218.44 153.2961 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "MOSI"
-		(shape input)
-		(at 226.06 144.78 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "67ce4249-e6d9-4752-bbd1-07ab4cf98eca")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 226.06 151.6782 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 				(hide yes)
 			)
 		)
@@ -4459,50 +4040,6 @@
 		(uuid "700e7a28-7259-4223-a487-6117b3f64c50")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 151.4384 100.33 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "GND"
-		(shape input)
-		(at 220.98 144.78 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "739426ca-0c6b-4676-912f-8595afe376af")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 220.98 151.0988 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SDA{slash}SS"
-		(shape input)
-		(at 139.7 90.17 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "7bd85d56-9e62-4d4e-8300-8f622fae6745")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 148.432 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4552,28 +4089,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SCK"
-		(shape input)
-		(at 228.6 144.78 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "8d7618d5-d36e-485a-9b9d-9e85635a1eda")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 228.6 150.5702 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 				(hide yes)
 			)
 		)
@@ -4688,7 +4203,7 @@
 			)
 		)
 	)
-	(global_label "WATER_LVL_SIGN"
+	(global_label "WATER_LVL_ADC"
 		(shape input)
 		(at 69.85 93.98 0)
 		(fields_autoplaced yes)
@@ -4700,7 +4215,7 @@
 		)
 		(uuid "cb55ac2f-0703-44fd-9bc7-3f71905a5410")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 86.6035 93.98 0)
+			(at 86.1159 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4864,9 +4379,9 @@
 			)
 		)
 	)
-	(global_label "RF_RST"
+	(global_label "WATER_LVL_PWR"
 		(shape input)
-		(at 139.7 92.71 0)
+		(at 139.7 113.03 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4874,9 +4389,9 @@
 			)
 			(justify left)
 		)
-		(uuid "f7c045d2-b1af-4f01-8e1a-ea990cb2af0f")
+		(uuid "f436958c-8f4d-4992-b359-9f9a0cf1d333")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 148.2161 92.71 0)
+			(at 156.3455 113.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4948,88 +4463,6 @@
 			(project "lora-life-jacket"
 				(path "/f133cdb7-ed3c-45d3-8327-842a7c7efb68"
 					(reference "#PWR05")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x07")
-		(at 223.52 139.7 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "0e8f3199-42b8-41e4-a619-adb1b79701f5")
-		(property "Reference" "J2"
-			(at 212.598 139.954 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "RC522 CONNECTOR"
-			(at 223.52 135.89 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 223.52 139.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 223.52 139.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x07, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 223.52 139.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "6"
-			(uuid "90b0c4e1-3f58-496c-ab5c-5c57302fee58")
-		)
-		(pin "3"
-			(uuid "97577e65-a1e6-4a7f-9800-7962986daac2")
-		)
-		(pin "5"
-			(uuid "0f9cc951-8f07-4084-8475-f8223fb40ba9")
-		)
-		(pin "1"
-			(uuid "1b01229f-a837-4961-9674-f1e62c2bdc3b")
-		)
-		(pin "7"
-			(uuid "26ef617c-e363-4043-a1b5-a5359924cd3a")
-		)
-		(pin "2"
-			(uuid "b5fac882-7180-43ba-901b-fbaa12a55de2")
-		)
-		(pin "4"
-			(uuid "1252ce5b-b194-4585-9f1c-259a046c76af")
-		)
-		(instances
-			(project ""
-				(path "/f133cdb7-ed3c-45d3-8327-842a7c7efb68"
-					(reference "J2")
 					(unit 1)
 				)
 			)

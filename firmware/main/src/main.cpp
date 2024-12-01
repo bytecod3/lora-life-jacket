@@ -383,11 +383,8 @@ void loop() {
             sprintf(lora_msg, "SOS\r\n");
 
             // send lora message
-            Serial.println("Panic button pressed. Sending: ");
+            Serial.print("Panic button pressed. Sending: ");
             Serial.print(lora_msg);
-
-            // send message
-//            sendLORAMsg(lora_msg);
 
             LoRa.beginPacket();
             LoRa.print(lora_msg);

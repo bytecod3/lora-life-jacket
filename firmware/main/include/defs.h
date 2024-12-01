@@ -19,7 +19,7 @@
 #define LORA_RST    2
 #define LORA_DIO    22
 #define LORA_FREQUENCY 868E6
-#define LORA_DELAY 1500
+#define LORA_DELAY 2000
 
 #define BAUDRATE 115200
 

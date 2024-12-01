@@ -1,3 +1,7 @@
+/**
+ * This is the firmware used for the life jacket onboard device
+ */
+
 #include <Arduino.h>
 #include <SPI.h>
 #include <LoRa.h>
@@ -18,11 +22,15 @@ MFRC522::MIFARE_Key key;
 byte nuidPICC[4];
 
 int water_raw_val = 0; // value for storing water level
-int btnState;
-int ledState = HIGH;
-int previousBtnState = LOW;
-long lastDebounceTime = 0;
-long debounceDelay = 100;
+
+// button press variables
+#define DEBOUNCE_DELAY 50
+int lastSteadyState = LOW; // previous steady state from the input pin
+int lastFlickerableState = LOW; // previous flickerable state from the input pin
+int currentState; // the current reading from the input pin
+unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
+int buttonPressed = 0;
+
 
 char lora_msg[100];
 double latitude;
@@ -40,7 +48,7 @@ void initLEDs();
 void initRFID();
 void readGPS();
 int readWaterLevel();
-uint8_t readPanicButton();
+int readPanicButton();
 void activateLEDs();
 void sendLORAMsg(char* );
 void readRFID();
@@ -165,33 +173,29 @@ void sendLORAMsg(char* msg) {
  * Light up some LED
  * 
  */
-// uint8_t readPanicButton() {
-//     int reading = digitalRead(PANIC_BUTTON);
+ int readPanicButton() {
+    // read the state of the button
+    int r;
+    currentState = digitalRead(PANIC_BUTTON);
+    if(currentState != lastFlickerableState) {
+        lastDebounceTime = millis();
+        lastFlickerableState = currentState;
+    }
+    if( (millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+        // if the button state has changed
+        if ( (lastSteadyState == HIGH) && (currentState == LOW) ) {
+            // button pressed
+            r = 1;
+        } else if( (lastSteadyState == LOW) && (currentState == HIGH) ) {
+            // button released
+            r = 0;
+        }
+        // save the last steady state
+        lastSteadyState = currentState;
+    }
 
-//     if(reading != previousBtnState) {
-//         // reset the debouncing timer
-//         lastDebounceTime = millis();
-//     }
-
-//     if ( (millis() - lastDebounceTime) > debounceDelay) {
-//         if(reading != btnState) {
-
-//             //SEND SOS MESSAGE
-
-//             debugln("Button pressed");
-//             // toggle Led
-//             if (btnState == LOW) {
-                
-//                 ledState = !ledState;
-//             }
-//         }
-//     }
-
-//     // digitalWrite(LED1, ledState);
-//     previousBtnState = reading;
-
-//     return reading;
-// }
+    return r;
+ }
 
 /**
  * @brief Read the RFID reader for card presence
@@ -358,43 +362,45 @@ void setup() {
 void loop() {
 
     // read RFID
-    readRFID();
+//    readRFID();
 
     // read and check water level
     // check for water level
 
+
+
     // read and check panic button
-    // read the state of the switch into a local variable:
-    int reading = digitalRead(PANIC_BUTTON);
-    // If the switch changed, due to noise or pressing:
-    if (reading != previousBtnState) {
-        // reset the debouncing timer
+    currentState = digitalRead(PANIC_BUTTON);
+    if(currentState != lastFlickerableState) {
         lastDebounceTime = millis();
+        lastFlickerableState = currentState;
     }
-    
-    if ((millis() - lastDebounceTime) > debounceDelay) {
-    
-        // if the button state has changed:
-        if (reading != btnState) {
-            btnState = reading;
+    if( (millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+        // if the button state has changed
+        if ( (lastSteadyState == HIGH) && (currentState == LOW) ) {
+            // button pressed
+            // compose LORA message for transmission
+            sprintf(lora_msg, "SOS\r\n");
 
-            debugln("Button pressed");
+            // send lora message
+            Serial.println("Panic button pressed. Sending: ");
+            Serial.print(lora_msg);
 
-            // COMPOSE LORA MESSAGE 
-            sprintf(lora_msg, "J1,%SOS\n");
+            // send message
+//            sendLORAMsg(lora_msg);
 
+            LoRa.beginPacket();
+            LoRa.print(lora_msg);
+            LoRa.endPacket();
+            delay(LORA_DELAY);
 
-            // only toggle the LED if the new button state is HIGH
-            if (btnState == HIGH) {
-                ledState = !ledState;
-            }
+        } else if( (lastSteadyState == LOW) && (currentState == HIGH) ) {
+            // button released
+
         }
+        // save the last steady state
+        lastSteadyState = currentState;
     }
 
-    digitalWrite(LED1, ledState);
-    previousBtnState = reading;
 
-    // compose LORA message for transmission
-    // sprintf();
-    
 }

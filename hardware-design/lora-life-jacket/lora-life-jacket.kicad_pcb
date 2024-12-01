@@ -1443,6 +1443,17 @@
 			(pintype "input")
 			(uuid "d722b8fb-1551-4033-95b3-f4f4cf6d3ee2")
 		)
+		(model "C:/Users/PC/Downloads/3D-PCB-MODELS/gy-neo6mv2-2.snapshot.2/GY-NEO6MV2-withAnt v7.step"
+			(offset
+				(xyz 49 -25 -1)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "my-modules:TP4056-MODULE"
 		(layer "F.Cu")
@@ -1641,6 +1652,17 @@
 			(pinfunction "OUT+")
 			(pintype "input")
 			(uuid "476c62ec-d69d-4842-a51e-08c0b17d36c8")
+		)
+		(model "C:/Users/PC/Downloads/3D-PCB-MODELS/tp4056-charging-module-type-c-1.snapshot.1/TP4056_Charging_Module_Type_C.step"
+			(offset
+				(xyz 14.5 9 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 180)
+			)
 		)
 	)
 	(footprint "Capacitor_THT:CP_Radial_D4.0mm_P2.00mm"
@@ -5777,6 +5799,17 @@
 			(solder_mask_margin 0.102)
 			(uuid "5a3d511c-2d84-44f9-89c4-577171e92334")
 		)
+		(model "C:/Users/PC/Downloads/3D-PCB-MODELS/ESP32-WROVER-DEVKIT-NODEMCU-V1.3.step"
+			(offset
+				(xyz 0 -0.5 3)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -90 0 0)
+			)
+		)
 	)
 	(footprint "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P15.24mm_Horizontal"
 		(layer "F.Cu")
@@ -6359,6 +6392,17 @@
 			)
 			(rotate
 				(xyz 0 0 0)
+			)
+		)
+		(model "C:/Users/PC/Downloads/3D-PCB-MODELS/12mm Push Button.STEP"
+			(offset
+				(xyz 4 -2.5 0)
+			)
+			(scale
+				(xyz 0.6 0.7 0.9)
+			)
+			(rotate
+				(xyz -90 0 0)
 			)
 		)
 	)
@@ -6961,6 +7005,17 @@
 			(pintype "power_in")
 			(solder_mask_margin 0.102)
 			(uuid "52d53e8f-ca0b-4934-9172-a550d360da69")
+		)
+		(model "C:/Users/PC/Downloads/3D-PCB-MODELS/LoRa_Module_RA-02_AiThinker.step"
+			(offset
+				(xyz -8 8.5 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 -180)
+			)
 		)
 	)
 	(footprint "Package_TO_SOT_SMD:SOT-223-3_TabPin2"

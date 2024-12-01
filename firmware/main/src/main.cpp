@@ -18,9 +18,16 @@ MFRC522::MIFARE_Key key;
 byte nuidPICC[4];
 
 int water_raw_val = 0; // value for storing water level
-int currentBtnState, previousBtnState;
-unsigned int lastDebounceTime = 0;
-unsigned int debounceDelay = 100;
+int btnState;
+int ledState = HIGH;
+int previousBtnState = LOW;
+long lastDebounceTime = 0;
+long debounceDelay = 100;
+
+char lora_msg[100];
+double latitude;
+double longitude;
+uint8_t day, month, year;
 
 /**
  * Function prototypes
@@ -158,18 +165,33 @@ void sendLORAMsg(char* msg) {
  * Light up some LED
  * 
  */
-uint8_t readPanicButton() {
-    currentBtnState = digitalRead(PANIC_BUTTON);
-    if(currentBtnState != previousBtnState) {
-        // get the time if the change, every time a button state changes
-        lastDebounceTime = millis(); 
-    }
+// uint8_t readPanicButton() {
+//     int reading = digitalRead(PANIC_BUTTON);
 
-    if( (millis() - lastDebounceTime) > debounceDelay) {
-        return digitalRead(currentBtnState);
-    }
+//     if(reading != previousBtnState) {
+//         // reset the debouncing timer
+//         lastDebounceTime = millis();
+//     }
 
-}
+//     if ( (millis() - lastDebounceTime) > debounceDelay) {
+//         if(reading != btnState) {
+
+//             //SEND SOS MESSAGE
+
+//             debugln("Button pressed");
+//             // toggle Led
+//             if (btnState == LOW) {
+                
+//                 ledState = !ledState;
+//             }
+//         }
+//     }
+
+//     // digitalWrite(LED1, ledState);
+//     previousBtnState = reading;
+
+//     return reading;
+// }
 
 /**
  * @brief Read the RFID reader for card presence
@@ -241,9 +263,13 @@ void readGPS() {
     // Get location
     debugln("Location: ");
     if(gps.location.isValid()) {
-        Serial.print(gps.location.lat(), 6);
+        latitude = gps.location.lat();
+        Serial.print(latitude, 6);
         debug(F(","));
-        Serial.print(gps.location.lng(), 6);
+
+        longitude = gps.location.lng();
+        Serial.print(longitude, 6);
+
     } else {
         debug(F("INVALID"));
     }
@@ -251,11 +277,16 @@ void readGPS() {
     // Get time and date
     debug(F("Date/time: "));
     if(gps.date.isValid()) {
-        debug(gps.date.month());
+        month = gps.date.month();
+        debug(month);
         debug(F("/"));
-        debug(gps.date.day());
+
+        day = gps.date.day();
+        debug(day);
         debug(F("/"));
-        debug(gps.date.year());
+
+        year = gps.date.year();
+        debug(year);
     } else {
         debug(F("INVALID"));
     }
@@ -331,16 +362,37 @@ void loop() {
 
     // read and check water level
     // check for water level
-    
-
 
     // read and check panic button
-    if (readPanicButton) {
-        debugln("Button pressed");
-        digitalWrite(LED1, HIGH);
-    } else {
-        digitalWrite(LED1, LOW);
+    // read the state of the switch into a local variable:
+    int reading = digitalRead(PANIC_BUTTON);
+    // If the switch changed, due to noise or pressing:
+    if (reading != previousBtnState) {
+        // reset the debouncing timer
+        lastDebounceTime = millis();
     }
+    
+    if ((millis() - lastDebounceTime) > debounceDelay) {
+    
+        // if the button state has changed:
+        if (reading != btnState) {
+            btnState = reading;
+
+            debugln("Button pressed");
+
+            // COMPOSE LORA MESSAGE 
+            sprintf(lora_msg, "J1,%SOS\n");
+
+
+            // only toggle the LED if the new button state is HIGH
+            if (btnState == HIGH) {
+                ledState = !ledState;
+            }
+        }
+    }
+
+    digitalWrite(LED1, ledState);
+    previousBtnState = reading;
 
     // compose LORA message for transmission
     // sprintf();

@@ -16,7 +16,9 @@
 HardwareSerial gpsSerial(2);
 TinyGPSPlus gps;
 MFRC522 rfid(RFID_CS, RFID_RST);
-MFRC522::MIFARE_Key key; 
+MFRC522::MIFARE_Key key;
+
+int jacket_id_ = 1001; // unique ID for this jacket
 
 // Init array that will store new NUID 
 byte nuidPICC[4];
@@ -32,10 +34,10 @@ unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
 int buttonPressed = 0;
 
 
-char lora_msg[100];
+char lora_msg[128];
 double latitude;
 double longitude;
-uint8_t day, month, year;
+uint8_t day=0, month=0, year=0, hr=0, mint=0, sec=0;
 
 /**
  * Function prototypes
@@ -265,61 +267,55 @@ void readRFID() {
 void readGPS() {
 
     // Get location
-    debugln("Location: ");
+    //debugln("Location: ");
     if(gps.location.isValid()) {
         latitude = gps.location.lat();
-        Serial.print(latitude, 6);
-        debug(F(","));
+        //Serial.print(latitude, 6);
+        //debug(F(","));
 
         longitude = gps.location.lng();
-        Serial.print(longitude, 6);
+        // Serial.print(longitude, 6);
 
     } else {
-        debug(F("INVALID"));
+        //debug(F("INVALID"));
     }
 
     // Get time and date
-    debug(F("Date/time: "));
+    //debug(F("Date/time: "));
     if(gps.date.isValid()) {
         month = gps.date.month();
-        debug(month);
-        debug(F("/"));
+        //debug(month);
+        //debug(F("/"));
 
         day = gps.date.day();
-        debug(day);
-        debug(F("/"));
+        //debug(day);
+        //debug(F("/"));
 
         year = gps.date.year();
-        debug(year);
+        //debug(year);
     } else {
-        debug(F("INVALID"));
+        //debug(F("INVALID"));
     }
 
     // time 
-    debug(F(" "));
+    //debug(F(" "));
     if (gps.time.isValid()) {
 
-        if (gps.time.hour() < 10) debug(F("0"));
-        debug(gps.time.hour());
-        debug(F(":"));
+        hr = gps.time.hour();
+        if (hr < 10) debug(F("0"));
+        //debug(hr);
 
-        if (gps.time.minute() < 10) debug(F("0"));
-        debug(gps.time.minute());
-        debug(F(":"));
+        mint = gps.time.minute();
+        if (mint < 10) debug(F("0"));
+        //debug(mint);
 
-        if (gps.time.second() < 10) debug(F("0"));
-        debug(gps.time.second());
-        debug(F("."));
+        sec = gps.time.second();
+        if (sec < 10) debug(F("0"));
+        //debug(sec);
 
-        if (gps.time.centisecond() < 10) debug(F("0"));
-        debug(gps.time.centisecond());
-
-    } else
-    {
-        debug(F("INVALID"));
+    } else {
+        //debug(F("INVALID"));
     }
-
-    debugln();
 
 }
 
@@ -361,13 +357,22 @@ void setup() {
 
 void loop() {
 
-    // read RFID
-//    readRFID();
-
     // read and check water level
     // check for water level
+    readGPS();
 
-
+    // compose LORA message
+    sprintf(lora_msg, "%d,SOS,%.2f,%.2f,%d,%d,%d,%d,%d,%d\n",
+            jacket_id_,
+            latitude,
+            longitude,
+            hr,
+            mint,
+            sec,
+            day,
+            month,
+            year
+            );
 
     // read and check panic button
     currentState = digitalRead(PANIC_BUTTON);
@@ -379,13 +384,7 @@ void loop() {
         // if the button state has changed
         if ( (lastSteadyState == HIGH) && (currentState == LOW) ) {
             // button pressed
-            // compose LORA message for transmission
-            sprintf(lora_msg, "SOS\r\n");
-
             // send lora message
-            Serial.print("Panic button pressed. Sending: ");
-            Serial.print(lora_msg);
-
             LoRa.beginPacket();
             LoRa.print(lora_msg);
             LoRa.endPacket();

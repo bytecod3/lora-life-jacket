@@ -33,11 +33,11 @@ int currentState; // the current reading from the input pin
 unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
 int buttonPressed = 0;
 
-
 char lora_msg[128];
 double latitude;
 double longitude;
-uint8_t day=0, month=0, year=0, hr=0, mint=0, sec=0;
+uint8_t day=0, month=0, hr=0, mint=0, sec=0;
+uint16_t year=0;
 
 /**
  * Function prototypes
@@ -265,56 +265,63 @@ void readRFID() {
  * @brief Read GPS 
  */
 void readGPS() {
+    while (gpsSerial.available() > 0) {
+        gps.encode(gpsSerial.read());
 
-    // Get location
-    //debugln("Location: ");
-    if(gps.location.isValid()) {
-        latitude = gps.location.lat();
-        //Serial.print(latitude, 6);
-        //debug(F(","));
+        if (gps.location.isUpdated()){ 
+            // Get location
+            debug("Location: ");
+            if(gps.location.isValid()) {
+                latitude = gps.location.lat();
+                Serial.print(gps.location.lat(), 2);
+                debug(F(","));
 
-        longitude = gps.location.lng();
-        // Serial.print(longitude, 6);
+                longitude = gps.location.lng();
+                Serial.print(gps.location.lng(), 2);
 
-    } else {
-        //debug(F("INVALID"));
-    }
+            } else {
+                debug(F("INVALID"));
+            }
 
-    // Get time and date
-    //debug(F("Date/time: "));
-    if(gps.date.isValid()) {
-        month = gps.date.month();
-        //debug(month);
-        //debug(F("/"));
+            // Get time and date
+            debug(F("Date/time: "));
+            if(gps.date.isValid()) {
+                month = gps.date.month();
+                debug(month);
+                debug(F("/"));
 
-        day = gps.date.day();
-        //debug(day);
-        //debug(F("/"));
+                day = gps.date.day();
+                debug(day);
+                debug(F("/"));
 
-        year = gps.date.year();
-        //debug(year);
-    } else {
-        //debug(F("INVALID"));
-    }
+                year = gps.date.year();
+                debug(year);
+            } else {
+                debug(F("INVALID"));
+            }
 
-    // time 
-    //debug(F(" "));
-    if (gps.time.isValid()) {
+            // time 
+            debug(F(" "));
+            if (gps.time.isValid()) {
 
-        hr = gps.time.hour();
-        if (hr < 10) debug(F("0"));
-        //debug(hr);
+                hr = gps.time.hour();
+                if (hr < 10) debug(F("0"));
+                debug(hr);
 
-        mint = gps.time.minute();
-        if (mint < 10) debug(F("0"));
-        //debug(mint);
+                mint = gps.time.minute();
+                if (mint < 10) debug(F("0"));
+                debug(mint);
 
-        sec = gps.time.second();
-        if (sec < 10) debug(F("0"));
-        //debug(sec);
+                sec = gps.time.second();
+                if (sec < 10) debug(F("0"));
+                debug(sec);
 
-    } else {
-        //debug(F("INVALID"));
+            } else {
+                debug(F("INVALID"));
+            }
+
+            debugln();
+        }
     }
 
 }
@@ -380,10 +387,12 @@ void loop() {
         lastDebounceTime = millis();
         lastFlickerableState = currentState;
     }
+
     if( (millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
         // if the button state has changed
         if ( (lastSteadyState == HIGH) && (currentState == LOW) ) {
             // button pressed
+            debugln(lora_msg);
             // send lora message
             LoRa.beginPacket();
             LoRa.print(lora_msg);

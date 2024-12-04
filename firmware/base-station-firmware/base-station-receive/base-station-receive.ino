@@ -11,7 +11,7 @@
 #include <LoRa.h>
 
 const int cs_pin = 4; 
-const int reset_pin = 15;
+const int reset_pin = 2;
 const int irq_pin = 22; // DIO0 on HOPE RF LORA MODULE - pin must have hardware interrupt
 
 

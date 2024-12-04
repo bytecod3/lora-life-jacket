@@ -22,6 +22,7 @@
 #define LORA_DELAY 10
 
 #define BAUDRATE 115200
+#define LED_BLINK   400
 
 // RFID reader Pins
 #define RFID_RST    12

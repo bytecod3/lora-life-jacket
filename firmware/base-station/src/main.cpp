@@ -29,7 +29,7 @@ const int irq_pin = 22; // DIO0 on HOPE RF LORA MODULE - pin must have hardware 
 int LED = 26;
 
 unsigned long previousBlink = 0;
-int blink_interval = 600;
+int blink_interval = 200;
 int ledState = 0;
 
 MFRC522 rfid(RFID_CS, RFID_RST);
@@ -73,11 +73,17 @@ void initRFID() {
 
 
 void  blinkLED() {
-    if((millis() - previousBlink) > blink_interval) {
-        ledState = !ledState;
-        previousBlink = millis();
-    }
-    digitalWrite(LED, ledState);
+//    if((millis() - previousBlink) > blink_interval) {
+//        ledState = !ledState;
+//        digitalWrite(LED, ledState);
+//        previousBlink = millis();
+//    }
+
+    digitalWrite(LED, HIGH);
+    delay(blink_interval);
+    digitalWrite(LED, LOW);
+    delay(blink_interval);
+
 }
 
 /**

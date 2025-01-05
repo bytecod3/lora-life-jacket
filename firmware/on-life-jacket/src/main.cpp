@@ -16,9 +16,13 @@
 HardwareSerial gpsSerial(2);
 TinyGPSPlus gps;
 
-int jacket_id_ = 1002; // unique ID for this jacket
-
+char* jacket_id_ = "D7 C1 80 35";
 int water_raw_val = 0; // value for storing water level
+
+
+const long BLINK_INTERVAL = 2000;   // interval at which to blink LED (milliseconds)
+int ledState = LOW;   // ledState used to set the LED
+unsigned long previousLEDMillis = 0;   // will store last time LED was updated
 
 // button press variables
 #define DEBOUNCE_DELAY 50
@@ -283,6 +287,16 @@ void setup() {
 }
 
 void loop() {
+    unsigned long currentMillis = millis();
+
+    if (currentMillis - previousLEDMillis >= BLINK_INTERVAL) {
+        // if the LED is off turn it on and vice-versa:
+        ledState = (ledState == LOW) ? HIGH : LOW;
+        // set the LED with the ledState of the variable:
+        digitalWrite(LED1, ledState);
+        // save the last time you blinked the LED
+        previousLEDMillis = currentMillis;
+    }
 
     // read and check water level
     int d = readWaterLevel();
@@ -290,16 +304,17 @@ void loop() {
     // check for water level
     if(d > WATER_LEVEL_THRESHOLD) {
         sendSOS();
+        digitalWrite(LED1, HIGH);
     }
 
     readGPS();
 
     // compose SAFE LORA message
-    sprintf(safe_msg, "%d,OK,%.2f,%.2f,%d,%d,%d,%d,%d,%d\n",
+    sprintf(safe_msg, "%s,OK,%.2f,%.2f,%d,%d,%d,%d,%d,%d\n",
             jacket_id_,
             latitude,
             longitude,
-            hr,
+            hr+3,
             mint,
             sec,
             day,
@@ -308,11 +323,11 @@ void loop() {
     );
 
     // compose SOS LORA message
-    sprintf(lora_msg, "%d,SOS,%.2f,%.2f,%d,%d,%d,%d,%d,%d\n",
+    sprintf(lora_msg, "%s,SOS,%.2f,%.2f,%d,%d,%d,%d,%d,%d\n",
             jacket_id_,
             latitude,
             longitude,
-            hr,
+            hr+3,
             mint,
             sec,
             day,

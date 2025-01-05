@@ -37,6 +37,7 @@ MFRC522::MIFARE_Key key;
 
 // Init array that will store new NUID
 byte nuidPICC[4];
+//
 
 String UID = "D7 C1 80 35";
 int num_scans = 0;

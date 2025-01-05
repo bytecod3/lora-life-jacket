@@ -24,6 +24,9 @@
 #define BAUDRATE 115200
 #define LED_BLINK   400
 
+
+#define UPDATE_FREQUENCY 2000
+
 // other pin defs
 #define LED1 26
 #define PANIC_BUTTON 15

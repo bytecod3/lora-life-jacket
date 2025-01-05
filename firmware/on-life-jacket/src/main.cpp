@@ -16,7 +16,7 @@
 HardwareSerial gpsSerial(2);
 TinyGPSPlus gps;
 
-int jacket_id_ = 1001; // unique ID for this jacket
+int jacket_id_ = 1002; // unique ID for this jacket
 
 int water_raw_val = 0; // value for storing water level
 
@@ -26,9 +26,15 @@ int lastSteadyState = LOW; // previous steady state from the input pin
 int lastFlickerableState = LOW; // previous flickerable state from the input pin
 int currentState; // the current reading from the input pin
 unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
+unsigned long lastSendTime = 0;
 int buttonPressed = 0;
 
+//variables to keep track of the timing of recent interrupts
+unsigned long button_time = 0;
+unsigned long last_button_time = 0;
+
 char lora_msg[128];
+char safe_msg[128];
 double latitude;
 double longitude;
 uint8_t day=0, month=0, hr=0, mint=0, sec=0;
@@ -48,7 +54,9 @@ int readPanicButton();
 void activateLEDs();
 void sendLORAMsg(char* );
 void initHW();
-
+void panicButtonISR();
+void sendSOS();
+void sendSafeMsg();
 
 /**
  * Functions implementation
@@ -86,11 +94,21 @@ void initLEDs() {
     debugln("[+]LEDs init OK!");
 }
 
+void IRAM_ATTR panicButtonISR() {
+    button_time = millis();
+    if (button_time - last_button_time > 250) {
+        sendSOS();
+        last_button_time = button_time;
+    }
+
+}
+
 /**
  * @brief Init panic button
  */
 void initPanicButton() {
     pinMode(PANIC_BUTTON, INPUT);
+    attachInterrupt(PANIC_BUTTON, panicButtonISR, FALLING);
     debugln("[+]Panic button init OK!");
 }
 
@@ -156,57 +174,57 @@ void readGPS() {
 
         if (gps.location.isUpdated()){ 
             // Get location
-            debug("Location: ");
+            //debug("Location: ");
             if(gps.location.isValid()) {
                 latitude = gps.location.lat();
-                Serial.print(gps.location.lat(), 2);
-                debug(F(","));
+                //Serial.print(gps.location.lat(), 2);
+                //debug(F(","));
 
                 longitude = gps.location.lng();
-                Serial.print(gps.location.lng(), 2);
+                //Serial.print(gps.location.lng(), 2);
 
             } else {
-                debug(F("INVALID"));
+                //debug(F("INVALID"));
             }
 
             // Get time and date
-            debug(F("Date/time: "));
+            //debug(F("Date/time: "));
             if(gps.date.isValid()) {
                 month = gps.date.month();
-                debug(month);
-                debug(F("/"));
+                //debug(month);
+                //debug(F("/"));
 
                 day = gps.date.day();
-                debug(day);
-                debug(F("/"));
+                //debug(day);
+                //debug(F("/"));
 
                 year = gps.date.year();
-                debug(year);
+                //debug(year);
             } else {
-                debug(F("INVALID"));
+                //debug(F("INVALID"));
             }
 
             // time 
-            debug(F(" "));
+            //debug(F(" "));
             if (gps.time.isValid()) {
 
                 hr = gps.time.hour();
                 if (hr < 10) debug(F("0"));
-                debug(hr);
+                //debug(hr);
 
                 mint = gps.time.minute();
                 if (mint < 10) debug(F("0"));
-                debug(mint);
+                //debug(mint);
 
                 sec = gps.time.second();
                 if (sec < 10) debug(F("0"));
-                debug(sec);
+                //debug(sec);
 
             } else {
-                debug(F("INVALID"));
+                //debug(F("INVALID"));
             }
 
-            debugln();
+            //debugln();
         }
     }
 
@@ -240,9 +258,20 @@ void initHW() {
 }
 
 void sendSOS() {
+    Serial.println(lora_msg);
     LoRa.beginPacket();
     LoRa.print(lora_msg);
     LoRa.endPacket();
+    delay(LORA_DELAY);
+}
+
+void sendSafeMsg() {
+
+    Serial.println(safe_msg);
+    LoRa.beginPacket();
+    LoRa.print(safe_msg);
+    LoRa.endPacket();
+
     delay(LORA_DELAY);
 }
 
@@ -265,7 +294,20 @@ void loop() {
 
     readGPS();
 
-    // compose LORA message
+    // compose SAFE LORA message
+    sprintf(safe_msg, "%d,OK,%.2f,%.2f,%d,%d,%d,%d,%d,%d\n",
+            jacket_id_,
+            latitude,
+            longitude,
+            hr,
+            mint,
+            sec,
+            day,
+            month,
+            year
+    );
+
+    // compose SOS LORA message
     sprintf(lora_msg, "%d,SOS,%.2f,%.2f,%d,%d,%d,%d,%d,%d\n",
             jacket_id_,
             latitude,
@@ -278,24 +320,11 @@ void loop() {
             year
             );
 
-    // read and check panic button
-    currentState = digitalRead(PANIC_BUTTON);
-    if(currentState != lastFlickerableState) {
-        lastDebounceTime = millis();
-        lastFlickerableState = currentState;
-    }
-
-    if( (millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+    // send safe msg every UPDATE_FREQUENCY seconds
+    if( (millis() - lastSendTime) > UPDATE_FREQUENCY) {
         // if the button state has changed
-        if ( (lastSteadyState == HIGH) && (currentState == LOW) ) {
-            sendSOS();
-
-        } else if( (lastSteadyState == LOW) && (currentState == HIGH) ) {
-            // button released
-        }
-
-        lastSteadyState = currentState;
+        sendSafeMsg();
+        lastSendTime = millis();
     }
-
 
 }

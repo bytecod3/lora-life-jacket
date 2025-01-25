@@ -4,9 +4,17 @@
 #include <LoRa.h>
 #include <MFRC522.h>
 #include <ArduinoJson.h>
+#include <string.h>
+#define ROWS 10
+#define COLS 20
 
-#define WIFI_SSID  "Gakibia-Unit3"
-#define WIFI_PASSWORD  "password"
+char split_strings[ROWS][COLS];
+
+// #define WIFI_SSID  "Gakibia-Unit3"
+// #define WIFI_PASSWORD  "password"
+
+#define WIFI_SSID  "Ken"
+#define WIFI_PASSWORD  "11111111"
 
 #define DEBUG 1
 
@@ -27,6 +35,7 @@ const int cs_pin = 4;
 const int reset_pin = 2;
 const int irq_pin = 22; // DIO0 on HOPE RF LORA MODULE - pin must have hardware interrupt
 int LED = 26;
+const int BUZZER_PIN = 25;
 
 unsigned long previousBlink = 0;
 int blink_interval = 200;
@@ -34,6 +43,8 @@ int ledState = 0;
 
 MFRC522 rfid(RFID_CS, RFID_RST);
 MFRC522::MIFARE_Key key;
+
+uint8_t activate_rcv_flag = 0x00;
 
 // Init array that will store new NUID
 byte nuidPICC[4];
@@ -43,13 +54,21 @@ String UID = "D7 C1 80 35";
 int num_scans = 0;
 
 // Server settings
-const char* serverUrl = "http://192.168.1.120:3002/sos"; // Replace with your Node.js server address and endpoint
+const char* serverUrl = "http://192.168.43.66:3002/sos"; // Replace with your Node.js server address and endpoint
 
 void initRFID();
 void readRFID();
 void printHex(byte *buffer, byte bufferSize);
 void printDec(byte *buffer, byte bufferSize);
 void sendToServer(String data);
+
+void buzz() {
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(200);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(300);
+}
+
 
 /**
  * @brief Initialize RFID tags
@@ -71,6 +90,37 @@ void initRFID() {
 
     // debugln(F("Scan PICC to see UID, SAK, type, and data blocks..."));
 }
+
+void decode_msg(char* msg) {
+    char copied[20];
+
+    printf("%s\n", msg);
+
+    char* token = strtok(msg, ",");
+
+    int index = 0;
+    while (token != NULL) {
+        //printf("%s\n", token);
+        strcpy(copied, token);
+        strcpy(split_strings[index], copied);
+        token = strtok(NULL, ",");
+        index++;
+    }
+
+    // printf("Processed strings\n");
+    // for(int i=0; i < ROWS; i++) {
+    //     printf("%s\n", split_strings[i]);
+    // }
+
+    if(strcmp(split_strings[1], "SOS") == 0) {
+        //printf("SOS found");
+        buzz();
+    } 
+    // else if(strcmp(split_strings[1], "OK") == 0) {
+    //     printf("OK found");
+    // }
+}
+
 
 
 void  blinkLED() {
@@ -116,11 +166,22 @@ void readRFID() {
 
     if(num_scans == 1) {
         Serial.println("Jacket issued");
+
+        // activate flag to show that device has been issued 
+        // which allows base station to receive messages
+        activate_rcv_flag = 0xff;
     }
 
     if(num_scans == 2) {
         num_scans = 0;
+
+
         Serial.println("Jacket returned");
+
+        // de-activate flag to show that device has been issued 
+        // which allows base station to receive messages
+        activate_rcv_flag = 0x00;
+
     }
 
     // Halt PICC
@@ -208,22 +269,39 @@ void setup() {
     initRFID();
 
     pinMode(LED, OUTPUT);
+
+    pinMode(BUZZER_PIN, OUTPUT);
 }
 
+
 void loop() {
-    int packetSize = LoRa.parsePacket();
-    if (packetSize) {
-        String packetData = "";
+    readRFID();
 
-        while (LoRa.available()) {
-            packetData += (char)LoRa.read();
+    // we have issued the jacket
+    // we an receive lora msg
+    if(activate_rcv_flag) {
+        int packetSize = LoRa.parsePacket();
+        if (packetSize) {
+            String packetData = "";
+
+            while (LoRa.available()) {
+                packetData += (char)LoRa.read();
+            }
+            
+            Serial.println("Received LoRa packet: " + packetData);
+
+            // Send the LoRa packet data to the server
+            sendToServer(packetData);
+
+            // decode message
+            char pckt_arr[packetData.length()+1];
+            strcpy(pckt_arr, packetData.c_str());
+
+            decode_msg(pckt_arr);
+
         }
-
-        Serial.println("Received LoRa packet: " + packetData);
-
-        // Send the LoRa packet data to the server
-        sendToServer(packetData);
+    } else {
+        Serial.println("Ready to scan...");
     }
 
-    readRFID();
 }

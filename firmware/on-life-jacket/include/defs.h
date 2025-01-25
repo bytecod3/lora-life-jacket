@@ -19,7 +19,7 @@
 #define LORA_RST    2
 #define LORA_DIO    22
 #define LORA_FREQUENCY 433E6
-#define LORA_DELAY 10
+#define LORA_DELAY 5000
 
 #define BAUDRATE 115200
 #define LED_BLINK   400
@@ -30,6 +30,7 @@
 // other pin defs
 #define LED1 26
 #define PANIC_BUTTON 15
+#define BUZZER_PIN 25
 
 // water level pin
 #define WATER_LEVEL_PWR 21

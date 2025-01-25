@@ -23,6 +23,7 @@ int water_raw_val = 0; // value for storing water level
 const long BLINK_INTERVAL = 2000;   // interval at which to blink LED (milliseconds)
 int ledState = LOW;   // ledState used to set the LED
 unsigned long previousLEDMillis = 0;   // will store last time LED was updated
+int button_pressed = 0;
 
 // button press variables
 #define DEBOUNCE_DELAY 50
@@ -31,7 +32,7 @@ int lastFlickerableState = LOW; // previous flickerable state from the input pin
 int currentState; // the current reading from the input pin
 unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
 unsigned long lastSendTime = 0;
-int buttonPressed = 0;
+volatile int buttonPressed = 0;
 
 //variables to keep track of the timing of recent interrupts
 unsigned long button_time = 0;
@@ -67,6 +68,17 @@ void sendSafeMsg();
  */
 
 /**
+initialize buzzer
+**/
+void buzz() {
+    Serial.println("Buzzong");
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(100);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(100);
+}
+
+/**
  * @brief Initialize the LORA transceivers
  * @param none
  */
@@ -99,9 +111,10 @@ void initLEDs() {
 }
 
 void IRAM_ATTR panicButtonISR() {
+   // buzz();
     button_time = millis();
-    if (button_time - last_button_time > 250) {
-        sendSOS();
+    if (button_time - last_button_time > 200) {
+        button_pressed = 1;
         last_button_time = button_time;
     }
 
@@ -246,6 +259,9 @@ int readWaterLevel() {
     return water_raw_val;
 }
 
+void initBuzzer() {
+    pinMode(BUZZER_PIN, OUTPUT);
+}
 
 /**
  * @brief Initialize the hardware
@@ -253,6 +269,7 @@ int readWaterLevel() {
  */
 void initHW() {
     Serial.begin(BAUDRATE);
+    initBuzzer();
     initLORA();
     initGPS();
     initWaterLevelSensor();
@@ -261,7 +278,9 @@ void initHW() {
 
 }
 
+
 void sendSOS() {
+
     Serial.println(lora_msg);
     LoRa.beginPacket();
     LoRa.print(lora_msg);
@@ -287,6 +306,15 @@ void setup() {
 }
 
 void loop() {
+
+    // panic button pressed
+    if(button_pressed) {
+        buzz();
+        sendSOS();
+
+        button_pressed = 0;
+    }
+
     unsigned long currentMillis = millis();
 
     if (currentMillis - previousLEDMillis >= BLINK_INTERVAL) {
@@ -303,6 +331,8 @@ void loop() {
 
     // check for water level
     if(d > WATER_LEVEL_THRESHOLD) {
+        Serial.println("Water threshold");
+        buzz();
         sendSOS();
         digitalWrite(LED1, HIGH);
     }

@@ -18,7 +18,9 @@ TinyGPSPlus gps;
 
 char* jacket_id_ = "D7 C1 80 35";
 int water_raw_val = 0; // value for storing water level
-
+uint8_t sos_mode_triggered = 0; // gets set to 1 if panic button is pressed OR water threshold is set
+uint8_t sos_mode_by_water = 0;
+uint8_t sos_mode_by_button = 0;
 
 const long BLINK_INTERVAL = 2000;   // interval at which to blink LED (milliseconds)
 int ledState = LOW;   // ledState used to set the LED
@@ -307,36 +309,7 @@ void setup() {
 
 void loop() {
 
-    // panic button pressed
-    if(button_pressed) {
-        buzz();
-        sendSOS();
-
-        button_pressed = 0;
-    }
-
-    unsigned long currentMillis = millis();
-
-    if (currentMillis - previousLEDMillis >= BLINK_INTERVAL) {
-        // if the LED is off turn it on and vice-versa:
-        ledState = (ledState == LOW) ? HIGH : LOW;
-        // set the LED with the ledState of the variable:
-        digitalWrite(LED1, ledState);
-        // save the last time you blinked the LED
-        previousLEDMillis = currentMillis;
-    }
-
-    // read and check water level
-    int d = readWaterLevel();
-
-    // check for water level
-    if(d > WATER_LEVEL_THRESHOLD) {
-        Serial.println("Water threshold");
-        buzz();
-        sendSOS();
-        digitalWrite(LED1, HIGH);
-    }
-
+    // get GPS
     readGPS();
 
     // compose SAFE LORA message
@@ -365,11 +338,52 @@ void loop() {
             year
             );
 
-    // send safe msg every UPDATE_FREQUENCY seconds
-    if( (millis() - lastSendTime) > UPDATE_FREQUENCY) {
-        // if the button state has changed
-        sendSafeMsg();
-        lastSendTime = millis();
+    // ================ CHECK FOR SOS =================
+    // panic button pressed
+    if(button_pressed) {
+        sos_mode_by_button = 1;
+        button_pressed = 0;
+        buzz();
+    }
+
+    // read and check water level
+    int d = readWaterLevel();
+    // check for water level
+    if(d > WATER_LEVEL_THRESHOLD) {
+        sos_mode_by_water = 1;
+        buzz();
+        digitalWrite(LED1, HIGH);
+    } else {
+        // out of water, out of danger
+        sos_mode_by_water = 0;
+    }
+
+    // here, SOS mode is triggered if any of the two methods detect danger
+    // set SOS mode if the button is pressed OR the water level threshold is recognised
+    if(sos_mode_by_button || sos_mode_by_water) {
+        sos_mode_triggered = 1;
+    } else {
+        sos_mode_triggered = 0;
+    }
+    
+    // here we check to see if SOS mode has been activated by any of the two methods
+    // if any of them has occured, the person is in danger
+    if(sos_mode_triggered) {
+        sendSOS();
+    } else {
+        sendSafeMsg(); 
+    }
+
+    // LOWEST PRIORITY 
+    // non-blocking LED blink
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousLEDMillis >= BLINK_INTERVAL) {
+        // if the LED is off turn it on and vice-versa:
+        ledState = (ledState == LOW) ? HIGH : LOW;
+        // set the LED with the ledState of the variable:
+        digitalWrite(LED1, ledState);
+        // save the last time you blinked the LED
+        previousLEDMillis = currentMillis;
     }
 
 }
